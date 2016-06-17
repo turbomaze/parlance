@@ -8,12 +8,12 @@ It doesn't make any assumptions about what your tokens look like (they can be st
 ## Grammar format
 Grammars are JSON objects, whose properties are EBNF rule names and whose values are EBNF rule expansions. Rule expansions take three forms:
 
-1. a function
+### Functions
   * a user defined function that accepts tokens and returns true if those tokens satisfy the rule
   * consumes one or more of the tokens, and specifies to the return object which tokens were consumed
 
 Example function in a rule in which tokens are represented as lists of strings:
-```
+```javascript
 ...
 
 'plus': function(tokens, ret) {
@@ -24,6 +24,46 @@ Example function in a rule in which tokens are represented as lists of strings:
   }
   return isPlus;
 },
+
+...
+```
+The `ret` parameter is used to send more information back to the caller, such as the consumed tokens (in `ret.structure`).
+
+### Objects (built-in functions)
+  * refers to EBNF concepts like "and", "or", and "repeat"
+  * rule returns true if the tokens satisfy the rule
+
+`and` and `or` use the following syntax: the object rule expansion has a single property, either `and` or `or`, and that property's value is an array of rules. The syntax allows for anonymous rules (nested objects). `repeat` is slightly different; instead of a list of rules, it's a list of 3 elements, the first of which is the minimum number of times the pattern can be repeated to satisfy the rule, the second is the maximum, and the third is the pattern to repeat.
+```javascript
+...
+
+'number': {
+  'repeat': [1, 10, 'digit']
+},
+
+'enclosedNumber': {
+  'and': ['leftParen', 'number', 'rightParen']
+},
+
+'twoNormalsOrEnclosed': {
+  'or': [
+    {
+      'and': ['number', 'number'],
+    },
+    'enclosedNumber'
+  ]
+},
+
+...
+```
+
+# Strings
+  * refers to another EBNF rule in the grammar
+  * allows for more control over the syntax tree generation step
+```javascript
+...
+
+'weirdNumber': 'number',
 
 ...
 ```
