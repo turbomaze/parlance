@@ -1,153 +1,101 @@
-var expressionGrammar = {
-  'expression': {
-    'and': [
-      'group',
-      {
-        'repeat': [
-          0, 10,
-          {
-            'and': [
-              'plus', 'expression'
-            ]
-          }
-        ]
-      }
-    ]
-  },
+/******************\
+|  General Parser  |
+| @author Anthony  |
+| @version 0.1     |
+| @date 2016/06/17 |
+| @edit 2016/06/17 |
+\******************/
 
-  'group': {
-    'or': [
-      'number',
-      {
-        'and': ['left', 'expression', 'right']
-      }
-    ]
-  },
+// exports
+var exports = module.exports = {};
 
-  'left': function(tokens, newTokens) {
-    var isLeft = tokens.length >= 1 && tokens[0] === '(';
-    if (isLeft) Parser.copyArray(newTokens, tokens.slice(1));
-    return isLeft;
-  },
+// config
+var DEBUG = false;
 
-  'plus': function(tokens, newTokens) {
-    var isPlus = tokens.length >= 1 && tokens[0] === '+';
-    if (isPlus) Parser.copyArray(newTokens, tokens.slice(1));
-    return isPlus;
-  },
-
-  'right': function(tokens, newTokens) {
-    var isRight = tokens.length >= 1 && tokens[0] === ')';
-    if (isRight) Parser.copyArray(newTokens, tokens.slice(1));
-    return isRight;
-  },
-
-  'number': function(tokens, newTokens) {
-    var isNumber = tokens.length >= 1 && typeof tokens[0] === 'number';
-    if (isNumber) Parser.copyArray(newTokens, tokens.slice(1));
-    return isNumber;
-  }
-};
-
-var Parser = (function() {
-  var DEBUG = true;
-
-  function copyArray(a, b) {
-    Array.prototype.splice.apply(a, [0, a.length].concat(b));
-  }
-
-  function applyBuiltIn(rules, type, components, tokens, newTokens) {
-    copyArray(newTokens, tokens);
-    var tempTokens = tokens.slice(0);
-    switch (type) {
-      case 'or':
-        for (var i = 0; i < components.length; i++) {
-          var component = components[i];
-          if (ruleApplies(rules, component, tokens, newTokens)) {
-            return true;
-          }
-        }
-        return false;
-      case 'and':
-        var doubleTempTokens = [];
-        for (var i = 0; i < components.length; i++) {
-          var component = components[i];
-          if (ruleApplies(rules, component, tempTokens, doubleTempTokens)) {
-            copyArray(tempTokens, doubleTempTokens);
-          } else {
-            return false;
-          }
-        }
-        copyArray(newTokens, tempTokens);
-        return true;
-      case 'repeat':
-        if (components.length !== 3) return false;
-        
-        var min = components[0], max = components[1], rule = components[2];
-        var doubleTempTokens = [];
-        for (var counter = 0; counter < max; counter++) {
-          if (ruleApplies(rules, rule, tempTokens, doubleTempTokens)) {
-            copyArray(tempTokens, doubleTempTokens);
-          } else {
-            break;
-          }
-        }
-
-        if (counter >= min) {
-          copyArray(newTokens, tempTokens);
+function applyBuiltIn(rules, structures, type, components, tokens, ret) {
+  var tempTokens = tokens.slice(0);
+  ret.newTokens = tokens.slice(0);
+  var doubleRet = {};
+  var structureList = [];
+  switch (type) {
+    case 'or':
+      for (var i = 0; i < components.length; i++) {
+        if (ruleApplies(rules, structures, components[i], tokens, ret)) {
+          ret.which = i;
           return true;
-        } else {
-          return false;
         }
-      default:
-        return false;
-    }
+      }
+      return false;
+    case 'and':
+      for (var i = 0; i < components.length; i++) {
+        if (ruleApplies(rules, structures, components[i], tempTokens, doubleRet)) {
+          tempTokens = doubleRet.newTokens;
+          structureList.push(doubleRet.structure);
+        } else return false;
+      }
+      ret.newTokens = tempTokens;
+      ret.structure = structureList;
+      return true;
+    case 'repeat':
+      if (components.length !== 3) return false;
+      
+      var min = components[0], max = components[1], rule = components[2];
+      for (var counter = 0; counter < max; counter++) {
+        if (ruleApplies(rules, structures, rule, tempTokens, doubleRet)) {
+          tempTokens = doubleRet.newTokens;
+          structureList.push(doubleRet.structure);
+        } else break;
+      }
+
+      if (counter >= min) {
+        ret.newTokens = tempTokens;
+        ret.structure = structureList;
+        return true;
+      }
   }
 
-  function ruleApplies(rules, rule, tokens, newTokens) {
-    if (DEBUG) console.log('RULE', rule, tokens);
+  return false;
+}
 
-    var struct = typeof rule === 'string' ? rules[rule] : rule;
+function ruleApplies(rules, structures, rule, tokens, ret) {
+  var struct = typeof rule === 'string' ? rules[rule] : rule;
 
-    var applies = false;
-    switch (typeof struct) {
-      case 'function':
-        applies = struct(tokens, newTokens);
-        break;
-      case 'object':
-        var builtIn = Object.keys(struct);
-        if (builtIn.length > 0) {
-          var type = builtIn[0];
-          applies = applyBuiltIn(rules, type, struct[type], tokens, newTokens);
-        } else {
-          applies = false;
-        }
-        break;
-      case 'string':
-        applies = ruleApplies(rules, struct, tokens, newTokens);
-        break;
-    }
-
-    return applies;
+  // apply the rule
+  var applies = false;
+  switch (typeof struct) {
+    case 'function':
+      applies = struct(tokens, ret);
+      break;
+    case 'object':
+      var builtIn = Object.keys(struct);
+      if (builtIn.length > 0) {
+        applies = applyBuiltIn(rules, structures, builtIn[0], struct[builtIn[0]], tokens, ret);
+      }
+      break;
+    case 'string':
+      applies = ruleApplies(rules, structures, struct, tokens, ret);
+      break;
   }
 
-  function parse(rules, goal, tokens) {
-    var newTokens = [];
-    var isRule = ruleApplies(rules, goal, tokens, newTokens);
-    return isRule && newTokens.length === 0;
+  // apply the structural transformation
+  if (applies && typeof rule === 'string') {
+    var args = typeof ret.structure === 'object' ? ret.structure : [ret.structure];
+    var transform = 'which' in ret ? structures[rule][ret.which] : structures[rule];
+    ret.structure = transform.apply(this, args);
   }
 
-  return {
-    parse: parse,
-    copyArray: copyArray
-  };
-})();
+  if (applies && DEBUG) {
+    console.log(rule, ':', tokens, '\n', JSON.stringify(ret.structure));
+  }
 
-// parse the token list
-var tokens = ['(', 9, '+', 4, ')'];
-var out = Parser.parse(expressionGrammar, 'expression', tokens);
-console.log('\n--- --- PARSING EXPRESSION --- ---\n');
-console.log('TOKENS');
-console.log(tokens);
-console.log('RESULT');
-console.log(out);
+  return applies;
+}
+
+function parse(rules, structures, goal, tokens) {
+  var ret = {};
+  var conformsToRule = ruleApplies(rules, structures, goal, tokens, ret);
+  if (conformsToRule && ret.newTokens.length === 0) return ret.structure;
+  else return false;
+}
+
+exports.parse = parse;
