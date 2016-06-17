@@ -1,7 +1,7 @@
 /******************\
 |  General Parser  |
 | @author Anthony  |
-| @version 0.1     |
+| @version 1.0     |
 | @date 2016/06/17 |
 | @edit 2016/06/17 |
 \******************/
