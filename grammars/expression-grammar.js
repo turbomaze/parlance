@@ -32,6 +32,10 @@ module.exports = {
     ]
   },
 
+  'number': {
+    'repeat': [1, 10, 'digit']
+  },
+
   'left': function(tokens, ret) {
     var isLeft = tokens.length >= 1 && tokens[0] === '(';
     if (isLeft) {
@@ -68,7 +72,7 @@ module.exports = {
     return isRight;
   },
 
-  'number': function(tokens, ret) {
+  'digit': function(tokens, ret) {
     var isNumber = tokens.length >= 1 && !isNaN(tokens[0]);
     if (isNumber) {
       ret.newTokens = tokens.slice(1);

@@ -31,14 +31,24 @@ module.exports = {
     function(number) {
       return number;
     },
+
     function(left, expression, right) {
       return expression;
     }
   ],
 
+  'number': function(digits) {
+    var sum = 0;
+    for (var i = 0; i < arguments.length; i++) {
+      var place = arguments.length - i - 1;
+      sum += arguments[i] * Math.pow(10, place);
+    }
+    return sum;
+  },
+
   'left': function(left) {return left;},
   'right': function(right) {return right;},
   'plus': function(plus) {return plus;},
   'times': function(times) {return times;},
-  'number': function(number) {return parseInt(number);}
+  'digit': function(number) {return parseInt(number);}
 };

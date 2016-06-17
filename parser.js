@@ -84,9 +84,7 @@ function ruleApplies(rules, structures, rule, tokens, ret) {
     ret.structure = transform.apply(this, args);
   }
 
-  if (applies && DEBUG) {
-    console.log(rule, ':', tokens, '\n', JSON.stringify(ret.structure));
-  }
+  if (applies && DEBUG) console.log(rule, ':', tokens, JSON.stringify(ret.structure));
 
   return applies;
 }

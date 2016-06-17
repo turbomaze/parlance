@@ -42,3 +42,4 @@ function getResults(str) {
 getResults('4*3+1');
 getResults('4*(3+1)');
 getResults('1+5*(2+(4+1)*2)');
+getResults('13+307+80');
