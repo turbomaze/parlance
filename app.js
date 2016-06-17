@@ -26,18 +26,19 @@ function evaluate(tree) {
   }
 }
 
+function getResults(str) {
+  // parse the token list
+  var tokens = str.split('');
+  var tree = parser.parse(expressionGrammar, expressionStructure, 'expression', tokens);
+  
+  // log stuff
+  console.log('--- --- --- --- --- --- ---');
+  console.log('PARSING:', '"' + str + '"'); 
+  console.log(' TOKENS:', tokens);
+  console.log('   TREE:', tree);
+  console.log(' RESULT:', evaluate(tree), '\n');
+}
 
-// parse the token list
-var expression = '(1+4)*3+(4+5)*2';
-var tokens = expression.split('');
-var out = parser.parse(expressionGrammar, expressionStructure, 'expression', tokens);
-
-// log stuff
-console.log('EXPRESSION');
-console.log(expression);
-console.log('\nTOKENS');
-console.log(tokens);
-console.log('\nPARSE TREE');
-console.log(out);
-console.log('\nRESULT');
-console.log(evaluate(out));
+getResults('4*3+1');
+getResults('4*(3+1)');
+getResults('1+5*(2+(4+1)*2)');
