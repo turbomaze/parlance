@@ -6,7 +6,13 @@ module.exports = {
   'value': [
     function(obj) {return obj;},
     function(arr) {return arr;},
-    function(num) {return num;}
+    function(num) {return num;},
+    function(bool) {return bool;}
+  ],
+
+  'boolean': [
+    function(args) {return args;},
+    function(args) {return args;}
   ],
 
   'array': function(args) {
@@ -56,6 +62,8 @@ module.exports = {
     return sum;
   },
 
+  'true': function(bool) {return true;},
+  'false': function(bool) {return false;},
   'digit': function(number) {return parseInt(number);},
   'letter': function(letter) {return letter;},
   'leftBracket': function(left) {return left;},

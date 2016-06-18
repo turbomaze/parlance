@@ -58,6 +58,6 @@ function getJSONResults(str) {
 
 // actual work
 // getExpressionResults('10+5*(2+(4+1)*2)');
-var str = '0';
+var str = JSON.stringify({"a":true,"foo":{"bar":[3,1,5]}});
 getJSONResults(str);
 console.log('        ',JSON.parse(str));
