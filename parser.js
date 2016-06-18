@@ -79,9 +79,9 @@ function ruleApplies(rules, structures, rule, tokens, ret) {
 
   // apply the structural transformation
   if (applies && typeof rule === 'string') {
-    var args = typeof ret.structure === 'object' ? ret.structure : [ret.structure];
-    var transform = 'which' in ret ? structures[rule][ret.which] : structures[rule];
-    ret.structure = transform.apply(this, args);
+    var transform = structures[rule];
+    if (typeof transform === 'object') transform = transform[ret.which];
+    ret.structure = transform.call(this, ret.structure);
   }
 
   if (applies && DEBUG) console.log(rule, ':', tokens, JSON.stringify(ret.structure));

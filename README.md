@@ -75,7 +75,7 @@ See the `structures/expression-structure.js` file for examples. There are four c
 
 1) If the corresponding grammar property is a function, that is, it's handled by you, the user, then the arguments are the tokens your function consumes in its processing. In the expressions example for single characters, the arguments are those single characters. 
 
-2) If the corresponding property is instead a built-in `repeat` or `and`, then one argument is supplied for each component of that `repeat` or `and`. The arguments are themselves processed, structural components.
+2) If the corresponding property is instead a built-in `repeat` or `and`, then one argument is supplied, and it's an array of the components of that `repeat` or `and`. The arguments are themselves processed, structural components.
 
 3) If the corresponding property is an `or`, then the value of that structural property must be an array of functions, which correspond to the components of the `or`, one-to-one, in order.
 

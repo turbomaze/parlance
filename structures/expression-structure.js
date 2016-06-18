@@ -1,10 +1,11 @@
-// This file contains the "semantic", structural information behind this grammar.
+// this file contains the structural information behind the expression grammar
 // @author Anthony Liu
 // @date 2016-06-17
 
 module.exports = {
-  'expression': function(term, plusExpressions) {
-    var struct = term;
+  'expression': function(args) {
+    var struct = args[0];
+    var plusExpressions = args[1];
     plusExpressions.forEach(function(plusExpression) {
       var unit = [];
       unit.push(plusExpression[0]);
@@ -15,8 +16,9 @@ module.exports = {
     return struct;
   },
 
-  'term': function(group, timesExpressions) {
-    var struct = group;
+  'term': function(args) {
+    var struct = args[0];
+    var timesExpressions = args[1];
     timesExpressions.forEach(function(timesExpression) {
       var unit = [];
       unit.push(timesExpression[0]);
@@ -32,16 +34,16 @@ module.exports = {
       return number;
     },
 
-    function(left, expression, right) {
-      return expression;
+    function(args) {
+      return args[1];
     }
   ],
 
   'number': function(digits) {
     var sum = 0;
-    for (var i = 0; i < arguments.length; i++) {
-      var place = arguments.length - i - 1;
-      sum += arguments[i] * Math.pow(10, place);
+    for (var i = 0; i < digits.length; i++) {
+      var place = digits.length - i - 1;
+      sum += digits[i] * Math.pow(10, place);
     }
     return sum;
   },
