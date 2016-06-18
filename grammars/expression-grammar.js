@@ -1,6 +1,17 @@
-// this file contains the EBNF for the grammar
+// this file contains the EBNF for the expression grammar
 // @author Anthony Liu
 // @date 2016-06-17
+
+function getCharFunc(c) {
+  return function(tokens, ret) {
+    var isChar = tokens.length >= 1 && tokens[0] === c;
+    if (isChar) {
+      ret.newTokens = tokens.slice(1);
+      ret.structure = tokens[0];
+    }
+    return isChar;
+  };
+}
 
 module.exports = {
   'expression': {
@@ -36,47 +47,15 @@ module.exports = {
     'repeat': [1, 10, 'digit']
   },
 
-  'left': function(tokens, ret) {
-    var isLeft = tokens.length >= 1 && tokens[0] === '(';
-    if (isLeft) {
-      ret.newTokens = tokens.slice(1);
-      ret.structure = [tokens[0]];
-    }
-    return isLeft;
-  },
-
-  'plus': function(tokens, ret) {
-    var isPlus = tokens.length >= 1 && tokens[0] === '+';
-    if (isPlus) {
-      ret.newTokens = tokens.slice(1);
-      ret.structure = [tokens[0]];
-    }
-    return isPlus;
-  },
-
-  'times': function(tokens, ret) {
-    var isTimes = tokens.length >= 1 && tokens[0] === '*';
-    if (isTimes) {
-      ret.newTokens = tokens.slice(1);
-      ret.structure = [tokens[0]];
-    }
-    return isTimes;
-  },
-
-  'right': function(tokens, ret) {
-    var isRight = tokens.length >= 1 && tokens[0] === ')';
-    if (isRight) {
-      ret.newTokens = tokens.slice(1);
-      ret.structure = [tokens[0]];
-    }
-    return isRight;
-  },
-
+  'plus': getCharFunc('+'),
+  'times': getCharFunc('*'),
+  'left': getCharFunc('('),
+  'right': getCharFunc(')'),
   'digit': function(tokens, ret) {
     var isNumber = tokens.length >= 1 && !isNaN(tokens[0]);
     if (isNumber) {
       ret.newTokens = tokens.slice(1);
-      ret.structure = [tokens[0]];
+      ret.structure = tokens[0];
     }
     return isNumber;
   }
