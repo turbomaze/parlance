@@ -12,6 +12,10 @@ var exports = module.exports = {};
 // config
 var DEBUG = false;
 
+function identity(a) {
+  return a;
+}
+
 function applyBuiltIn(rules, structures, type, components, tokens, ret) {
   var tempTokens = tokens.slice(0);
   ret.newTokens = tokens.slice(0);
@@ -80,7 +84,11 @@ function ruleApplies(rules, structures, rule, tokens, ret) {
   // apply the structural transformation
   if (applies && typeof rule === 'string') {
     var transform = structures[rule];
+
     if (typeof transform === 'object') transform = transform[ret.which];
+
+    if (typeof transform !== 'function') transform = identity;
+
     ret.structure = transform.call(this, ret.structure);
   }
 

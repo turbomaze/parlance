@@ -2,23 +2,7 @@
 // @author Anthony Liu
 // @date 2016-06-17
 
-function identity(a) {
-  return a;
-}
-
 module.exports = {
-  'value': [
-    identity,
-    identity,
-    identity,
-    identity
-  ],
-
-  'boolean': [
-    identity,
-    identity
-  ],
-
   'array': function(args) {
     var optionalValues = args[1];
     var arr = [];
@@ -33,9 +17,6 @@ module.exports = {
     }
     return arr;
   },
-
-  'values': identity,
-  'commaValue': identity,
 
   'object': function(args) {
     var optionalKeyValuePairs = args[1];
@@ -52,10 +33,6 @@ module.exports = {
     return obj;
   },
 
-  'keyValuePairs': identity,
-
-  'commaKeyValuePair': identity,
-
   'keyValuePair': function(args) {
     return [args[0], args[2]];
   },
@@ -63,8 +40,6 @@ module.exports = {
   'property': function(args) {
     return args[1] + args[2].join('');
   },
-
-  'alphanum': identity,
 
   'number': function(digits) {
     var sum = 0;
@@ -78,12 +53,4 @@ module.exports = {
   'true': function(bool) {return true;},
   'false': function(bool) {return false;},
   'digit': function(number) {return parseInt(number);},
-  'letter': identity,
-  'leftBracket': identity,
-  'rightBracket': identity,
-  'leftBrace': identity,
-  'rightBrace': identity,
-  'colon': identity,
-  'double': identity,
-  'comma': identity
 };

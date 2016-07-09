@@ -2,10 +2,6 @@
 // @author Anthony Liu
 // @date 2016-06-17
 
-function identity(a) {
-  return a;
-}
-
 module.exports = {
   'expression': function(args) {
     var struct = args[0];
@@ -33,17 +29,13 @@ module.exports = {
     return struct;
   },
 
-  'plusTerm': identity,
-
   'group': [
-    identity,
+    null,
 
     function(args) {
       return args[1];
     }
   ],
-
-  'timesGroup': identity,
 
   'number': function(digits) {
     var sum = 0;
@@ -53,10 +45,5 @@ module.exports = {
     }
     return sum;
   },
-
-  'plus': identity,
-  'times': identity,
-  'left': identity,
-  'right': identity,
   'digit': function(number) {return parseInt(number);}
 };
