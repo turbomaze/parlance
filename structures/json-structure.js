@@ -3,18 +3,6 @@
 // @date 2016-06-17
 
 module.exports = {
-  'value': [
-    function(obj) {return obj;},
-    function(arr) {return arr;},
-    function(num) {return num;},
-    function(bool) {return bool;}
-  ],
-
-  'boolean': [
-    function(args) {return args;},
-    function(args) {return args;}
-  ],
-
   'array': function(args) {
     var optionalValues = args[1];
     var arr = [];
@@ -65,12 +53,4 @@ module.exports = {
   'true': function(bool) {return true;},
   'false': function(bool) {return false;},
   'digit': function(number) {return parseInt(number);},
-  'letter': function(letter) {return letter;},
-  'leftBracket': function(left) {return left;},
-  'rightBracket': function(right) {return right;},
-  'leftBrace': function(left) {return left;},
-  'rightBrace': function(right) {return right;},
-  'colon': function(colon) {return colon;},
-  'double': function(quote) {return quote;},
-  'comma': function(comma) {return comma;}
 };

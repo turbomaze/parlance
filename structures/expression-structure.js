@@ -30,9 +30,7 @@ module.exports = {
   },
 
   'group': [
-    function(number) {
-      return number;
-    },
+    null,
 
     function(args) {
       return args[1];
@@ -47,10 +45,5 @@ module.exports = {
     }
     return sum;
   },
-
-  'left': function(left) {return left;},
-  'right': function(right) {return right;},
-  'plus': function(plus) {return plus;},
-  'times': function(times) {return times;},
   'digit': function(number) {return parseInt(number);}
 };

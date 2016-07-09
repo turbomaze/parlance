@@ -2,6 +2,8 @@
 // @author Anthony Liu
 // @date 2016-06-17
 
+var parser = require('../parser.js');
+
 function getCharFunc(c) {
   return function(tokens, ret) {
     var isChar = tokens.length >= 1 && tokens[0] === c;
@@ -28,85 +30,18 @@ function getStringFunc(str) {
 }
 
 module.exports = {
-  'value': {
-    'or': [
-      'object', 'array', 'number', 'boolean'
-    ]
-  }, 
-
-  'boolean': {'or': ['true', 'false']},
-
-  'array': {
-    'and': [
-      'leftBracket',
-      {
-        'repeat': [
-          0, 1, {
-            'and': [
-              'value',
-              {
-                'repeat': [
-                  0, 10,
-                  {
-                    'and': ['comma', 'value']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      'rightBracket'
-    ]
-  },
-
-  'object': {
-    'and': [
-      'leftBrace',
-      {
-        'repeat': [
-          0, 1, {
-            'and': [
-              'keyValuePair',
-              {
-                'repeat': [
-                  0, 10,
-                  {
-                    'and': ['comma', 'keyValuePair']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      'rightBrace'
-    ]
-  },
-
-  'keyValuePair': {
-    'and': [
-      'property', 'colon', 'value'
-    ]
-  },
-
-  'property': {
-    'and': [
-      'double',
-      'letter',
-      {
-        'repeat': [
-          0, 10, {'or': ['letter', 'digit']}
-        ]
-      },
-      'double'
-    ]
-  },
-
-  'number': {
-    'repeat': [1, 10, 'digit']
-  },
-
+  'value': 'object | array | number | boolean',
+  'boolean': 'true | false',
+  'array': 'leftBracket, { values }, rightBracket',
+  'values': 'value, { commaValue }',
+  'commaValue': 'comma, value',
+  'object': 'leftBrace, { keyValuePairs }, rightBrace',
+  'keyValuePairs': 'keyValuePair, { commaKeyValuePair }',
+  'commaKeyValuePair': 'comma, keyValuePair',
+  'keyValuePair': 'property, colon, value',
+  'property': 'double, letter, { alphanum }, double',
+  'alphanum': 'letter | digit',
+  'number': 'digit+',
   'true': getStringFunc('true'),
   'false': getStringFunc('false'),
   'digit': function(tokens, ret) {

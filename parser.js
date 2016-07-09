@@ -3,7 +3,7 @@
 | @author Anthony  |
 | @version 1.1     |
 | @date 2016/06/17 |
-| @edit 2016/06/17 |
+| @edit 2016/07/08 |
 \******************/
 
 // exports
@@ -11,6 +11,10 @@ var exports = module.exports = {};
 
 // config
 var DEBUG = false;
+
+function identity(a) {
+  return a;
+}
 
 function applyBuiltIn(rules, structures, type, components, tokens, ret) {
   var tempTokens = tokens.slice(0);
@@ -80,7 +84,11 @@ function ruleApplies(rules, structures, rule, tokens, ret) {
   // apply the structural transformation
   if (applies && typeof rule === 'string') {
     var transform = structures[rule];
+
     if (typeof transform === 'object') transform = transform[ret.which];
+
+    if (typeof transform !== 'function') transform = identity;
+
     ret.structure = transform.call(this, ret.structure);
   }
 
@@ -96,4 +104,62 @@ function parse(rules, structures, goal, tokens) {
   else return false;
 }
 
-exports.parse = parse;
+function getRuleFromExpansion(expansion) {
+	if (typeof expansion === 'function') return expansion;
+
+	expansion = expansion.replace(/\s+/g, '');
+
+  if (expansion.indexOf('|') !== -1) {
+		// or
+    var orArguments = expansion.split('|');
+    var components = orArguments.map(function(ebnfRule) {
+			return getRuleFromExpansion(ebnfRule);
+		});
+    return {'or': components};
+  } else if (expansion.indexOf(',') !== -1) {
+		// and
+    var andArguments = expansion.split(',');
+    var components = andArguments.map(function(ebnfRule) {
+			return getRuleFromExpansion(ebnfRule);
+		});
+    return {'and': components};
+  } else if (expansion.indexOf('+') === expansion.length - 1) {
+		// repeat at least once
+    var ebnfRule = expansion.substring(0, expansion.length - 1);
+    return {'repeat': [1, 100, ebnfRule]};
+  } else if (
+      expansion.indexOf('{') === 0 &&
+      expansion.indexOf('}') === expansion.length - 1
+  ) {
+		// repeat optionally
+    var ebnfRule = expansion.substring(1, expansion.length - 1);
+    return {'repeat': [0, 100, ebnfRule]};
+  } else if (
+      expansion.indexOf('[') === 0 &&
+      expansion.indexOf(']') === expansion.length - 1
+  ) {
+		// optional
+    var ebnfRule = expansion.substring(1, expansion.length - 1);
+    return {'repeat': [0, 1, ebnfRule]};
+  }
+
+  return expansion;
+}
+
+function getRulesFromEbnf(ebnf) {
+  var rules = {};
+  for (var ruleName in ebnf) {
+    rules[ruleName] = getRuleFromExpansion(ebnf[ruleName]);
+  }
+  return rules;
+}
+
+function Parser(grammar, structure) {
+  this.grammar = getRulesFromEbnf(grammar);
+  this.structure = structure;
+}
+Parser.prototype.parse = function(goal, tokens) {
+  return parse(this.grammar, this.structure, goal, tokens);
+};
+
+exports.Parser = Parser;
