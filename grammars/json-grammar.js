@@ -29,7 +29,7 @@ function getStringFunc(str) {
   };
 }
 
-module.exports = parser.getRulesFromEbnf({
+module.exports = {
   'value': 'object | array | number | boolean',
   'boolean': 'true | false',
   'array': 'leftBracket, { values }, rightBracket',
@@ -67,4 +67,4 @@ module.exports = parser.getRulesFromEbnf({
   'colon': getCharFunc(':'),
   'double': getCharFunc('"'),
   'comma': getCharFunc(',')
-});
+};

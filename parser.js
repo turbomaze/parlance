@@ -154,5 +154,12 @@ function getRulesFromEbnf(ebnf) {
   return rules;
 }
 
-exports.parse = parse;
-exports.getRulesFromEbnf = getRulesFromEbnf;
+function Parser(grammar, structure) {
+  this.grammar = getRulesFromEbnf(grammar);
+  this.structure = structure;
+}
+Parser.prototype.parse = function(goal, tokens) {
+  return parse(this.grammar, this.structure, goal, tokens);
+};
+
+exports.Parser = Parser;

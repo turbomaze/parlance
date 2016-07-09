@@ -6,11 +6,13 @@
 | @edit 2016/06/17 |
 \******************/
 
-var parser = require('./parser.js');
+var Parser = require('./parser.js').Parser;
 var expressionGrammar = require('./grammars/expression-grammar.js');
 var expressionStructure = require('./structures/expression-structure.js');
 var jsonGrammar = require('./grammars/json-grammar.js');
 var jsonStructure = require('./structures/json-structure.js');
+var ExpressionParser = new Parser(expressionGrammar, expressionStructure);
+var JsonParser = new Parser(jsonGrammar, jsonStructure);
 
 // helper functions
 function evaluate(tree) { // evaluates parse trees
@@ -28,10 +30,10 @@ function evaluate(tree) { // evaluates parse trees
   }
 }
 
-function getResults(grammar, structure, goal, str) {
+function getResults(parser, goal, str) {
   // parse the token list
   var tokens = str.split('');
-  var tree = parser.parse(grammar, structure, goal, tokens);
+  var tree = parser.parse(goal, tokens);
   
   // log stuff
   console.log('--- --- --- --- --- --- ---');
@@ -43,7 +45,7 @@ function getResults(grammar, structure, goal, str) {
 
 function getExpressionResults(str) {
   var tree = getResults(
-    expressionGrammar, expressionStructure, 'expression', str
+    ExpressionParser, 'expression', str
   );
   console.log(' RESULT:', evaluate(tree), '\n');
   console.log();
@@ -52,7 +54,7 @@ function getExpressionResults(str) {
 
 function getJSONResults(str) {
   var tree = getResults(
-    jsonGrammar, jsonStructure, 'value', str
+    JsonParser, 'value', str
   );
   console.log(' ANSWER:',JSON.parse(str));
   console.log();
@@ -60,8 +62,7 @@ function getJSONResults(str) {
 }
 
 // actual work
-// getExpressionResults('10+5*(2+(4+1)*2)');
 var str = JSON.stringify({"a":true,"foo":{"bar":[3,1,5]}});
 getJSONResults(str);
-
-getExpressionResults('10+5*(2+(4+1)*2)');
+str = '10+5*(2+(4+1)*2)'
+getExpressionResults(str);

@@ -15,7 +15,7 @@ function getCharFunc(c) {
   };
 }
 
-module.exports = parser.getRulesFromEbnf({
+module.exports = {
   'expression': 'term, { plusTerm }',
   'term': 'group, { timesGroup }',
   'plusTerm': 'plus, term',
@@ -34,4 +34,4 @@ module.exports = parser.getRulesFromEbnf({
     }
     return isNumber;
   }
-});
+};
