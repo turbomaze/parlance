@@ -37,7 +37,7 @@ function getResults(grammar, structure, goal, str) {
   console.log('--- --- --- --- --- --- ---');
   console.log('PARSING:', '"' + str + '"'); 
   console.log(' TOKENS:', JSON.stringify(tokens));
-  console.log('   TREE:', tree);
+  console.log(' RESULT:', tree);
   return tree;
 }
 
@@ -46,6 +46,7 @@ function getExpressionResults(str) {
     expressionGrammar, expressionStructure, 'expression', str
   );
   console.log(' RESULT:', evaluate(tree), '\n');
+  console.log();
   return tree;
 }
 
@@ -53,6 +54,8 @@ function getJSONResults(str) {
   var tree = getResults(
     jsonGrammar, jsonStructure, 'value', str
   );
+  console.log(' ANSWER:',JSON.parse(str));
+  console.log();
   return tree;
 }
 
@@ -60,4 +63,5 @@ function getJSONResults(str) {
 // getExpressionResults('10+5*(2+(4+1)*2)');
 var str = JSON.stringify({"a":true,"foo":{"bar":[3,1,5]}});
 getJSONResults(str);
-console.log('        ',JSON.parse(str));
+
+getExpressionResults('10+5*(2+(4+1)*2)');

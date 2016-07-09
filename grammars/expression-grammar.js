@@ -2,6 +2,8 @@
 // @author Anthony Liu
 // @date 2016-06-17
 
+var parser = require('../parser.js');
+
 function getCharFunc(c) {
   return function(tokens, ret) {
     var isChar = tokens.length >= 1 && tokens[0] === c;
@@ -13,40 +15,13 @@ function getCharFunc(c) {
   };
 }
 
-module.exports = {
-  'expression': {
-    'and': [
-      'term',
-      {
-        'repeat': [
-          0, 10, {'and': ['plus', 'term']}
-        ]
-      }
-    ]
-  },
-
-  'term': {
-    'and': [
-      'group',
-      {
-        'repeat': [
-          0, 5, {'and': ['times', 'group']}
-        ]
-      }
-    ]
-  },
-
-  'group': {
-    'or': [
-      'number',
-      {'and': ['left', 'expression', 'right']}
-    ]
-  },
-
-  'number': {
-    'repeat': [1, 10, 'digit']
-  },
-
+module.exports = parser.getRulesFromEbnf({
+  'expression': 'term, { plusTerm }',
+  'term': 'group, { timesGroup }',
+  'plusTerm': 'plus, term',
+  'group': 'number | left, expression, right',
+  'timesGroup': 'times, group',
+  'number': 'digit+',
   'plus': getCharFunc('+'),
   'times': getCharFunc('*'),
   'left': getCharFunc('('),
@@ -59,4 +34,4 @@ module.exports = {
     }
     return isNumber;
   }
-};
+});

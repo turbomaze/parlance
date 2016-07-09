@@ -2,17 +2,21 @@
 // @author Anthony Liu
 // @date 2016-06-17
 
+function identity(a) {
+  return a;
+}
+
 module.exports = {
   'value': [
-    function(obj) {return obj;},
-    function(arr) {return arr;},
-    function(num) {return num;},
-    function(bool) {return bool;}
+    identity,
+    identity,
+    identity,
+    identity
   ],
 
   'boolean': [
-    function(args) {return args;},
-    function(args) {return args;}
+    identity,
+    identity
   ],
 
   'array': function(args) {
@@ -30,6 +34,9 @@ module.exports = {
     return arr;
   },
 
+  'values': identity,
+  'commaValue': identity,
+
   'object': function(args) {
     var optionalKeyValuePairs = args[1];
     var obj = {};
@@ -45,6 +52,10 @@ module.exports = {
     return obj;
   },
 
+  'keyValuePairs': identity,
+
+  'commaKeyValuePair': identity,
+
   'keyValuePair': function(args) {
     return [args[0], args[2]];
   },
@@ -52,6 +63,8 @@ module.exports = {
   'property': function(args) {
     return args[1] + args[2].join('');
   },
+
+  'alphanum': identity,
 
   'number': function(digits) {
     var sum = 0;
@@ -65,12 +78,12 @@ module.exports = {
   'true': function(bool) {return true;},
   'false': function(bool) {return false;},
   'digit': function(number) {return parseInt(number);},
-  'letter': function(letter) {return letter;},
-  'leftBracket': function(left) {return left;},
-  'rightBracket': function(right) {return right;},
-  'leftBrace': function(left) {return left;},
-  'rightBrace': function(right) {return right;},
-  'colon': function(colon) {return colon;},
-  'double': function(quote) {return quote;},
-  'comma': function(comma) {return comma;}
+  'letter': identity,
+  'leftBracket': identity,
+  'rightBracket': identity,
+  'leftBrace': identity,
+  'rightBrace': identity,
+  'colon': identity,
+  'double': identity,
+  'comma': identity
 };
