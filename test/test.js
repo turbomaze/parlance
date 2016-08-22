@@ -1,5 +1,6 @@
 // Parlance tests
 // @author Anthony Liu
+// @date 2016/08/21
 
 var assert = require('assert');
 var parlance = require('../src/parlance.js');
