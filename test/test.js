@@ -46,6 +46,17 @@ describe('Parlance', function() {
       it('should group multiplications first', function() {
         testExpression('42+18*10', ['+', 42, ['*', 18, 10]]);
       });
+
+      it('should correctly locate simple syntax errors', function() {
+        var input = '42++18'.split('');
+        var expected = ['+', '1', '8'];
+        try {
+          ExpressionParser.parse('expression', input);
+          assert.deepEqual('no error', 'syntax error');
+        } catch (e) {
+          assert.deepEqual(e.data.tokens, expected);
+        }
+      });
     });
   });
 
@@ -63,6 +74,10 @@ describe('Parlance', function() {
         testJson('[]');
       });
 
+      it('should properly parse empty objects', function() {
+        testJson('{}');
+      });
+
       it('should properly parse numeric arrays', function() {
         testJson('[1,2,3]');
       });
@@ -71,8 +86,27 @@ describe('Parlance', function() {
         testJson('[1,true,false,3]');
       });
 
+      it('should properly parse simple objects', function() {
+        testJson('{"foo":10,"bar":33}');
+      });
+
       it('should properly parse nested arrays', function() {
         testJson('[[1,[2,[3]]]]');
+      });
+
+      it('should properly parse nested objects', function() {
+        testJson('{"foo":{"bar":1,"cork":[2,3]},"quux":4}');
+      });
+
+      it('should correct locate complex syntax errors', function() {
+        var input = '{"a":{"b":1,"c":[2,3]},"d"::4}'.split('');
+        var expected = [':', '4', '}'];
+        try {
+          JsonParser.parse('value', input);
+          assert.deepEqual('no error', 'syntax error');
+        } catch (e) {
+          assert.deepEqual(e.data.tokens, expected);
+        }
       });
     });
   });
