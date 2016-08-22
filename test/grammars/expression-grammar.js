@@ -1,6 +1,6 @@
 // this file contains the EBNF for the expression grammar
 // @author Anthony Liu
-// @date 2016-06-17
+// @date 2016/06/17
 
 function getCharFunc(c) {
   return function(tokens, ret) {

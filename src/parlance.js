@@ -1,10 +1,6 @@
-/******************\
-|     Parlance     |
-| @author Anthony  |
-| @version 1.1     |
-| @date 2016/06/17 |
-| @edit 2016/08/21 |
-\******************/
+// Parlance
+// @author Anthony Liu
+// @date 2016/08/21
 
 // config
 var DEBUG = false;
