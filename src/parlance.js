@@ -1,13 +1,10 @@
 /******************\
-|  General Parser  |
+|     Parlance     |
 | @author Anthony  |
 | @version 1.1     |
 | @date 2016/06/17 |
-| @edit 2016/07/08 |
+| @edit 2016/08/21 |
 \******************/
-
-// exports
-var exports = module.exports = {};
 
 // config
 var DEBUG = false;
@@ -162,4 +159,6 @@ Parser.prototype.parse = function(goal, tokens) {
   return parse(this.grammar, this.structure, goal, tokens);
 };
 
-exports.Parser = Parser;
+module.exports = function(grammar, structure) {
+  return new Parser(grammar, structure);
+};

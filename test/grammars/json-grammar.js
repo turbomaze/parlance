@@ -2,8 +2,6 @@
 // @author Anthony Liu
 // @date 2016-06-17
 
-var parser = require('../parser.js');
-
 function getCharFunc(c) {
   return function(tokens, ret) {
     var isChar = tokens.length >= 1 && tokens[0] === c;
