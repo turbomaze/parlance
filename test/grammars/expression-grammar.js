@@ -1,8 +1,6 @@
 // this file contains the EBNF for the expression grammar
 // @author Anthony Liu
-// @date 2016-06-17
-
-var parser = require('../parser.js');
+// @date 2016/06/17
 
 function getCharFunc(c) {
   return function(tokens, ret) {

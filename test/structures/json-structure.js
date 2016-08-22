@@ -1,6 +1,6 @@
 // this file contains the structural information behind the json grammar
 // @author Anthony Liu
-// @date 2016-06-17
+// @date 2016/06/17
 
 module.exports = {
   'array': function(args) {
